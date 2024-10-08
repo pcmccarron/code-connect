@@ -16,7 +16,7 @@ export default defineConfig({
 				github: 'https://github.com/figma/code-connect',
 			},
 			customCss: [
-				'./src/styles/globals.css'
+				'/src/styles/globals.css'
 			],
 			sidebar: [
 				{
@@ -30,6 +30,6 @@ export default defineConfig({
 			],
 		}),
 	],
-	site: 'https://pcmccarron.github.io',
-	base: "/docs"
+	site: 'https://pcmccarron.github.io/code-connect',
+	base: '/docs'
 });
