@@ -31,5 +31,5 @@ export default defineConfig({
 		}),
 	],
 	site: 'https://pcmccarron.github.io/code-connect',
-	base: '/docs'
+	base: '/code-connect'
 });
