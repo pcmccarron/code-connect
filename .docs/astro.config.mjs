@@ -4,6 +4,8 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
+	site: 'https://pcmccarron.github.io/code-connect',
+	base: '/code-connect',
 	integrations: [
 		starlight({
 			title: 'Code Connect',
@@ -30,6 +32,4 @@ export default defineConfig({
 			],
 		}),
 	],
-	site: 'https://pcmccarron.github.io/code-connect',
-	base: '/code-connect'
 });
