@@ -15,7 +15,7 @@ Refer to [the instructions here](../README.md#CLI-installation) to install the `
 
 Add the Gradle plugin to your module `build.gradle.kts` file.
 
-```
+```kts
 plugins {
    id("com.figma.code.connect") version "1.+"
 }
@@ -25,7 +25,7 @@ plugins {
 
 In order to start authoring Code Connect files, add the following dependencies to the `build.gradle.kts` file in the module that will contain the files. Note that you may need to add `mavenCentral()` to `repositories in your `dependencyResolutionManagement` block.
 
-```
+```kts
 dependencies {
     implementation("com.figma.code.connect:code-connect-lib:1.+")
 }
@@ -36,7 +36,7 @@ dependencies {
 
 To keep things simple, we're going to start by replacing the contents of the generated file with a basic Code Connect configuration to make sure everything is set up and working. Replace the contents of your file with the following, swapping the `Button` reference with a reference to whatever component you want to connect.
 
-```kotlin
+```kts
 package com.your.app.directory
 
 import androidx.compose.runtime.Composable
@@ -64,7 +64,7 @@ Now go back to Dev Mode in Figma and select the component that you just connecte
 
 By default, this setup will create a new Code Connect file that lives alongside your code component files. However, these two files can also be co-located. To do this, simply move the contents of the `.figma.kt` file into your original component definition file. This is a great way to ensure Code Connect is always updating what appears in Dev Mode at the same time the code component itself is updated.
 
-```kotlin
+```kts
 package com.your.app.directory
 
 import androidx.compose.runtime.Composable
@@ -105,7 +105,7 @@ To ensure the connected code accurately reflects the design we need to make use 
 
 Here is a simple example for a button with `label`, `disabled`, and `type` properties.
 
-```kotlin
+```kts
 package com.your.app.directory
 
 import androidx.compose.runtime.Composable
@@ -150,7 +150,7 @@ class ButtonDoc {
 Variants in Figma can be mapped using `FigmaType.Enum` with the `Figma.mapping` helper. `Figma.mapping` takes a list of `pair`s where the first element in the pair is the value in Figma, and the second value is what should appear in code.
 
 
-```kotlin
+```kts
 @FigmaProperty(FigmaType.Text, "Text Content")
 val label: String = "Click me txt"
 
@@ -170,7 +170,7 @@ val icon : @Composable () -> Unit = { IconComponent() }
 
 For more advanced mapping—where properties in Figma and code do not match exactly—Code Connect also allows you to specify your own mapping. For example, you can map a boolean from Figma for displaying either an icon or divider accessory.
 
-```kotlin
+```kts
 @FigmaProperty(FigmaType.Boolean, "Has Icon")
 val accessory: @Composable() -> Unit = Figma.mapping(
    true to Icon(),
@@ -180,7 +180,7 @@ val accessory: @Composable() -> Unit = Figma.mapping(
 
 Or setting a boolean to true when a specific enum option is specified in Figma.
 
-```kotlin
+```kts
 @FigmaProperty(FigmaType.Enum, "Type")
 val isDisabled: Bool = Figma.mapping("Disabled" to true)
 ```
@@ -190,7 +190,7 @@ val isDisabled: Bool = Figma.mapping("Disabled" to true)
 
 While `@FigmaInstance` can be used to map child instances that are instance-swap properties in Figma, it's common for components in Figma to have child instances that aren't bound to an instance-swap prop. We can render the code snippets for these nested instances with the `@FigmaChildren` property wrapper. This helper takes the _name of the instance layer_ as its parameter, rather than a Figma prop name. It's important to note that the nested instance also must be connected separately.
 
-```kotlin
+```kts
 @FigmaChildren("Header", "Row")
 val contents : @Composable () -> Unit = { }
 
@@ -208,7 +208,7 @@ Sometimes a component in Figma is represented by more than one component in code
 
 To model this behavior with Code Connect, we can make use of variant mappings. These allow you to provide different code samples for different variants of a single Figma component.
 
-```Kotlin
+```kts
 @FigmaConnect("https://...")
 @FigmaVariant("Type", "Primary")
 class PrimaryButtonConnection {
@@ -242,7 +242,7 @@ class DangerButtonConnection {
 
 In some complex cases you may also want to map a code component to a combination of variants in Figma.
 
-```Kotlin
+```kts
 // Default case
 @FigmaConnect("https://...")
 class ButtonConnection {

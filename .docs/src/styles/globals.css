@@ -2,7 +2,7 @@
 
 @font-face {
   font-family: "FigmaSans";
-  src: url('/fonts/Figma-Sans-VF.woff2') format('woff2');
+  src: url('/code-connect/fonts/Figma-Sans-VF.woff2') format('woff2');
   font-weight: 100 900;
   font-stretch: 75% 125%;
   font-style: normal;
@@ -11,7 +11,7 @@
 
 @font-face {
   font-family: "FigmaMono";
-  src: url('/fonts/Figma-Mono-VF.woff2') format('woff2');
+  src: url('/code-connect/fonts/Figma-Mono-VF.woff2') format('woff2');
   font-weight: 100 900;
   font-stretch: 75% 125%;
   font-style: normal;
@@ -58,7 +58,7 @@ body {
 
 .header,
 .sidebar-pane {
-  background-color: var(--sds-color-background-default-secondary);
+  background-color: var(--sds-color-background-default-tertiary);
   color: var(--sds-color-text-default-secondary);
   [aria-current="page"] {
     background-color: var(--sds-color-background-positive-secondary);
@@ -72,8 +72,13 @@ body {
 
 .sl-flex {
   summary {
-    background-color: var(--sds-color-background-default-secondary);
+    background-color: var(--sds-color-background-default-tertiary);
   }
+}
+
+.iframe-box {
+  margin: 20px;
+  background-color: var(--sds-color-background-default-tertiary);
 }
 
 .sl-badge {

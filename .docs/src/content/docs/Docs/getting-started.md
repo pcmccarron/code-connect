@@ -12,8 +12,9 @@ Code Connect is easy to set up, easy to maintain, type-safe, and extensible. Out
 
 ![image](https://static.figma.com/uploads/d98e747613e01685d6a0f9dd3e2dcd022ff289c0.png)
 
-> [!NOTE]
-> Code Connect is available on Organization and Enterprise plans and requires a full Design or Dev Mode seat to use.
+:::note[Note]
+Code Connect is available on Organization and Enterprise plans and requires a full Design or Dev Mode seat to use.
+:::
 
 ## CLI installation
 

@@ -22,8 +22,10 @@ After providing those, Code Connect will attempt to link your code files to your
 
 ![image](https://static.figma.com/uploads/8eaf17a16f4cca27d5b5b18f418608fd806c675d)
 
-> [!TIP]
-> If you have too many components to connect at once, try entering a subfolder when prompted for the path to your code files. You can later change this to another folder, and any already-connected code files will be filtered out of the list of connectable components.
+:::note
+If you have too many components to connect at once, try entering a subfolder when prompted for the path to your code files. You can later change this to another folder, and any already-connected code files will be filtered out of the list of connectable components.
+:::
+
 ### Choosing whether to use AI
 
 Code Connect gives you the option to use AI to improve the accuracy of the generated prop mappings. If you choose to use AI, the following is sent to OpenAI for any components you're connecting:

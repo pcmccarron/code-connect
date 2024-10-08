@@ -125,7 +125,7 @@ figma connect unpublish --token <token>
 
 In addition to the [general configuration](../README.md#general-configuration) for the CLI, there are optional SwiftUI-specific project configuration optional that can be specified in the configuration file. The `figma.config.json` file must be located in your project root, i.e. alongside your `.xcodeproj` or `Package.swift` file.
 
-```jsonp
+```json
 {
    "codeConnect": {
       "include": [...],
