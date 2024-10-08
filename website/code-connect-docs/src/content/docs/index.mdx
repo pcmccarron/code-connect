@@ -1,0 +1,36 @@
+---
+title: Code Connect
+description: Accelerate design system adoption.
+template: splash
+hero:
+  tagline: A tool for connecting design system code to Figma
+  image:
+    file: ../../assets/dev-mode.svg
+  actions:
+    - text: Get started
+      link: /docs/getting-started/
+      icon: right-arrow
+    - text: Dev Mode documentation
+      link: https://help.figma.com/hc/en-us/sections/15023066873239
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## 
+
+<CardGrid>
+	<Card title="Update content" icon="pencil">
+		Edit `src/content/docs/index.mdx` to see this page change.
+	</Card>
+	<Card title="Add new content" icon="add-document">
+		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	</Card>
+	<Card title="Configure your site" icon="setting">
+		Edit your `sidebar` and other config in `astro.config.mjs`.
+	</Card>
+	<Card title="Read the docs" icon="open-book">
+		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	</Card>
+</CardGrid>

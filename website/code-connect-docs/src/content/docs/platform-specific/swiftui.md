@@ -1,6 +1,7 @@
-# Code Connect (SwiftUI)
-
-For more information about Code Connect as well as guides for other platforms and frameworks, please [go here](../README.md).
+---
+title: SwiftUI
+description: Information about using code connect with SwiftUI.
+---
 
 This documentation guide will help you connect your SwiftUI components with Figma components using Code Connect. We'll cover basic setup to display your first connected component, followed by prop mapping and variant mapping.
 

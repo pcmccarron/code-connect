@@ -1,41 +1,55 @@
-# Code Connect (React)
+---
+title: HTML & Web Components
+sidebar:
+  badge: 
+    text: New
+    variant: success
+description: Information about using code connect with HTML-based Frameworks and Web Components.
+---
 
-For more information about Code Connect as well as guides for other platforms and frameworks, please [go here](../README.md).
 
-This documentation will help you connect your React (or React Native) components with Figma components using Code Connect. We'll cover basic setup to display your first connected code snippet, followed by making snippets dynamic by using property mappings. Code Connect for React works as both a standalone implementation and as an integration with existing Storybook files to enable easily maintaining both systems in parallel.
+:::caution[Important]
+HTML support for Code Connect is in preview, and the API is liable to change during this period. Please let us know your feedback via [GitHub Issues](https://github.com/figma/code-connect/issues/new/choose).
+:::
+
+This documentation will help you connect your HTML components with Figma components using Code Connect. This allows you to document Web Components, Angular, Vue, and any other framework which uses HTML syntax. See the [examples](#examples) section for examples of using Code Connect HTML with various HTML-based frameworks.
+
+We'll cover basic setup to display your first connected code snippet, followed by making snippets dynamic by using property mappings.
 
 ## Installation
 
-Code Connect is used through a command line interface (CLI). The CLI comes bundled with the `@figma/code-connect` package, which you'll need to install through `npm`. This package also includes helper functions and types associated with Code Connect, which you import from `@figma/code-connect/react` (note that we also support `@figma/code-connect` imports for backwards compatibility, but new projects should import from `@figma/code-connect/react`).
+Code Connect is used through a command line interface (CLI). The CLI comes bundled with the `@figma/code-connect` package, which you'll need to install through `npm`. This package also includes helper functions and types associated with Code Connect, which you import from `@figma/code-connect/html`.
 
-Install this package into your React project's directory.
+Install this package into your project's directory.
 
 ```sh
 npm install @figma/code-connect
 ```
 
+> [!NOTE]
+> Code Connect uses [package.json entry points](https://nodejs.org/api/packages.html#packages_package_entry_points), which requires `"moduleResolution": "NodeNext"` in your `tsconfig.json`. If this is a problem for your project, please let us know via [GitHub Issues](https://github.com/figma/code-connect/issues/new/choose).
+
 ## Basic setup
 
-To connect your first component go to Dev Mode in Figma and right-click on the component you want to connect, then choose `Copy link to selection` from the menu. Make sure you are copying the link to a main component and not an instance of the component. The main component will typically be located in a centralized design system library file. Using this link, run `figma connect create` from inside your React project. Note that depending on what terminal software you're using, you might need to wrap the URL in quotes.
+To connect your first component go to Dev Mode in Figma and right-click on the component you want to connect, then choose `Copy link to selection` from the menu. Make sure you are copying the link to a main component and not an instance of the component. The main component will typically be located in a centralized design system library file. Using this link, run `figma connect create` from inside your project. Note that depending on what terminal software you're using, you might need to wrap the URL in quotes.
 
 ```sh
 npx figma connect create "https://..." --token <auth token>
 ```
 
-This will create a Code Connect file with some basic scaffolding for the component you want to connect. By default this file will be called `<component-name>.figma.tsx` based on the name of the component in Figma. However, you may rename this file as you see fit. The scaffolding that is generated is based on the interface of the component in Figma. Depending on how closely this matches your code component you'll need to make some edits to this file before you publish it.
+This will create a Code Connect file with some basic scaffolding for the component you want to connect. By default this file will be called `<component-name>.figma.ts` based on the name of the component in Figma. However, you may rename this file as you see fit. The scaffolding that is generated is based on the interface of the component in Figma. Depending on how closely this matches your code component you'll need to make some edits to this file before you publish it.
 
 Some CLI commands, like `create`, require a valid [authentication token](https://help.figma.com/hc/en-us/articles/8085703771159-Manage-personal-access-tokens) with write permission for the Code Connect scope as well as the read permission for the File content scope. You can either pass this via the `--token` flag, or set the `FIGMA_ACCESS_TOKEN` environment variable. The Figma CLI reads this from a `.env` file in the same folder, if it exists.
 
-To keep things simple, we're going to start by replacing the contents of the generated file with the most basic Code Connect configuration possible to make sure everything is set up and working as expected. Replace the contents of the file with the following, replacing the `Button` reference with a reference to whatever component you are trying to connect. The object called by `figma.connect` is your Code Connect doc.
+To keep things simple, we're going to start by replacing the contents of the generated file with the most basic Code Connect configuration possible to make sure everything is set up and working as expected. Replace the contents of the file with the following, replacing the `<ds-button>` reference with a reference to whatever component you are trying to connect.
 
-```tsx
-import figma from '@figma/code-connect/react'
-import { Button } from 'src/components'
+The object called by `figma.connect` is your Code Connect doc. Code Connect HTML support uses template literals tagged with the `html` tag for the example code. The code inside these literals will be formatted correctly by Prettier.
 
-figma.connect(Button, 'https://...', {
-  example: () => {
-    return <Button />
-  },
+```ts
+import figma, { html } from '@figma/code-connect/html'
+
+figma.connect('https://...', {
+  example: () => html`<ds-button></ds-button>`
 })
 ```
 
@@ -52,37 +66,7 @@ Now go back to Dev Mode in Figma and select the component that you just connecte
 
 ## Interactive setup
 
-A step-by-step interactive flow is provided which makes it easier to connect a large codebase. Code Connect will attempt to automatically connect your codebase to your Figma design system components based on name, which you can then make any edits to before batch-creating Code Connect files.
-
-To start the interactive setup, enter `figma connect` without any subcommands:
-
-```sh
-npx figma connect
-```
-
-## Integrating with Storybook
-
-If you already have Storybook set up for your design system then we recommend using the Storybook integration that comes with Code Connect. Storybook and Code Connect complement each other nicely and with this integration they are easy to maintain in parallel. The syntax for integrating with Storybook is slightly different to ensure alignment with the Storybook API.
-
-To define a Code Connect doc using Storybook simply add a `parameters` block to your story configuration object that references the Figma component you want to pull into Code Connect. This syntax is an extension of the [existing Storybook integration](https://help.figma.com/hc/en-us/articles/360045003494-Storybook-and-Figma) offered by Figma, so you'll automatically get all the benefits that come with that such as a Figma preview of the component embedded in your Storybook documentation.
-
-```tsx
-export default {
-  component: Button,
-  parameters: {
-    design: {
-      type: 'figma',
-      url: 'https://...',
-      examples: [ButtonExample],
-    },
-  },
-}
-
-// Existing story
-export function ButtonExample() {
-  return <Button disabled />
-}
-```
+The interactive setup flow is not currently supported for HTML projects.
 
 ## Publishing
 
@@ -113,65 +97,15 @@ npx figma connect unpublish --token <token>
 
 To configure the behaviour of the CLI and Code Connect you can create a `figma.config.json` file. This file must be located in the project root, i.e. alongside your `package.json` file. This config file will automatically be picked up by the CLI if it's in the same folder where you run the commands, but you can also specify a path to the config file via the `--config` flag.
 
-In addition to the [general configuration](../README.md#general-configuration) for the CLI, there is React-specific project configuration that can be specified in the configuration file. This configuration is mainly used to ensure Code Connect can correctly locate your imports as well as display the correct imports within Dev Mode.
+See the [general configuration](../README.md#general-configuration) documentation for information about the support configuration options.
 
-```jsonp
-{
-  "codeConnect": {
-    "parser": "react",
-    "include": [],
-    "exclude": ["test/**", "docs/**", "build/**"],
-    "importPaths": {
-      "src/components/*": "@ui/components"
-    },
-    "paths": {
-      "@ui/components/*": ["src/components/*"]
-    }
-  }
-}
-```
+### `label`
 
-### `importPaths`
+For HTML projects, Code Connect sets the default label based on HTML-based frameworks detected in the first ancestor `package.json` of the working directory which matches one of the following:
 
-`importPaths` maps relative imports to non-relative imports. This is useful for when you want users of your design system to import components from a specific package as opposed to using relative imports. The mapping uses the file location on disk. For example, if your Code Connect file looks like this:
-
-```
-import { Button } from './'
-figma.connect(Button, 'https://...')
-```
-
-You can use `importPaths` by specifying where `Button` lives in your repo and map it to something else. You can use partial paths here, as it will
-consider the full absolute path of the source file `Button.tsx`.
-
-```
-{
-  "codeConnect": {
-    "importPaths": {
-      "src/components/*": "@ui/components"
-    }
-  }
-}
-```
-
-Which will end up changing your connected code snippet in Figma to
-
-```
-import { Button } from '@ui/components'
-```
-
-### `paths`
-
-This is needed if you're using path aliases in your TypeScript project configuration, so Code Connect can know how to resolve your imports. It should match the `paths` object used in your tsconfig.json.
-
-## Custom imports
-
-You can override the generated import statements for a connected component by passing an array of `imports`. This might be useful if the automatic resolution does not work well for your use case.
-
-```
-figma.connect(Button, "https://...", {
-  imports: ["import { Button } from '@lib'"]
-})
-```
+- If a `package.json` containing `angular` is found, the label is set to `Angular`
+- If a `package.json` containing `vue` is found, the label is set to `Vue`
+- Otherwise, the label is set to `Web Components`
 
 ## Dynamic code snippets
 
@@ -181,10 +115,10 @@ To ensure the connected code snippet accurately reflects the design, we need to 
 
 Here is a simple example for a button with a `label`, `disabled`, and `type` property.
 
-```tsx
-import figma from '@figma/code-connect/react'
+```ts
+import figma, { html } from '@figma/code-connect/html'
 
-figma.connect(Button, 'https://...', {
+figma.connect('https://...', {
   props: {
     label: figma.string('Text Content'),
     disabled: figma.boolean('Disabled'),
@@ -193,89 +127,22 @@ figma.connect(Button, 'https://...', {
       Secondary: 'secondary',
     }),
   },
-  example: ({ disabled, label, type }) => {
-    return (
-      <Button disabled={disabled} type={type}>
-        {label}
-      </Button>
-    )
-  },
+  example: ({ disabled, label, type }) => html`\
+<ds-button disabled=${disabled} type=${type}>
+  ${label}
+</ds-button>`
 })
 ```
 
-And this is how we would achieve the same thing using the Storybook integration. Notice how this works well with existing `args` configuration you may already be using in Storybook.
-
-```tsx
-import figma from "@figma/code-connect"
-
-export default {
-  component: Button,
-  parameters: {
-    design: {
-      type: 'figma',
-      url: 'https://...',
-      examples: [ButtonExample],
-      props: {
-        label: figma.string('Text Content'),
-        disabled: figma.boolean('Disabled'),
-        type: figma.enum('Type', {
-          Primary: ButtonType.Primary,
-          Secondary: ButtonType.Secondary
-        },
-      },
-    },
-    argTypes: {
-      label: { control: 'string' },
-      disabled: { control: 'boolean' },
-      type: {
-        control: {
-          type: 'select',
-          options: [ButtonType.Primary, ButtonType.Secondary]
-        }
-      }
-    },
-    args: {
-      label: 'Hello world',
-      disabled: false,
-      type: ButtonType.Primary
-    }
-  }
-}
-
-export function ButtonExample({ label, disabled, type }) {
-  return <Button disabled={disabled} type={type}>{ label }</Button>
-}
-```
+Figma properties can be inserted in the Code Connect example using template string interpolation, e.g. `${disabled}`. For HTML element attributes, Code Connect uses the type of the Figma property to render it correctly, so `disabled=${disabled}` will either render `disabled` or nothing, as it is a boolean; whereas `type=${type}` will render `type="primary"`, as it is a string.
 
 The `figma` import contains helpers for mapping all sorts of properties from design to code. They work for simple mappings where only the naming differs between Figma and code, as well as more complex mappings where the type differs. See the below reference for all the helpers that exist and the ways you can use them to connect Figma and code components using Code Connect.
-
-### figma.connect
-
-`figma.connect()` has two signatures for connecting components.
-
-```
-// connect a component in code to a Figma component
-figma.connect(Button, "https://...")
-
-// connect a Figma component to e.g a native element
-figma.connect("https://...")
-```
-
-TODO DEPRECTATE?
-
-The second option is useful if you want to just render a HTML tag instead of a React component. The first argument is used to determine where your component lives in code, in order to generate an import statement for the component. This isn't needed if you just want to render e.g a `button` tag.
-
-```
-figma.connect("https://...", {
-  example: () => <button>click me</button>
-})
-```
 
 ### Strings
 
 Strings are the simplest value to map from Figma to code. Simply call `figma.string` with the Figma prop name you want to reference as a parameter. This is useful for things like button labels, header titles, tooltips, etc.
 
-```tsx
+```ts
 figma.string('Title')
 ```
 
@@ -283,20 +150,20 @@ figma.string('Title')
 
 Booleans work similar to strings. However Code Connect also provides helpers for mapping booleans in Figma to more complex types in code. For example you may want to map a Figma boolean to the existence of a specific sublayer in code. In addition to mapping boolean props, `figma.boolean` can be used to map boolean Variants in Figma. A boolean Variant is a Variant with only two options that are either "Yes"/"No", "True"/"False" or "On"/Off". For `figma.boolean` these values are normalized to `true` and `false`.
 
-```tsx
+```ts
 // simple mapping of boolean from figma to code
 figma.boolean('Has Icon')
 
 // map a boolean value to one of two options of any type
 figma.boolean('Has Icon', {
-  true: <Icon />,
-  false: <Spacer />,
+  true: html`<ds-icon></ds-icon>`,
+  false: html`<ds-spacer></ds-spacer>`,
 })
 ```
 
 In some cases, you only want to render a certain prop if it matches some value in Figma. You can do this either by passing a partial mapping object, or setting the value to `undefined`.
 
-```tsx
+```ts
 // Don't render the prop if 'Has label' in figma is `false`
 figma.boolean('Has label', {
   true: figma.string('Label'),
@@ -308,7 +175,7 @@ figma.boolean('Has label', {
 
 Variants (or enums) in Figma are commonly used to control the look and feel of components that require more complex options than a simple boolean toggle. Variant properties are always strings in Figma but they can be mapped to any type in code. The first parameter is the name of the Variant in Figma, and the second parameter is a value mapping. The _keys_ in this object should match the different options of that Variant in Figma, and the _value_ is whatever you want to output instead.
 
-```tsx
+```ts
 // maps the 'Options' variant in Figma to enum values in code
 figma.enum('Options', {
   'Option 1': Option.first,
@@ -317,36 +184,34 @@ figma.enum('Options', {
 
 // maps the 'Options' variant in Figma to sub-component values in code
 figma.enum('Options', {
-  'Option 1': <Icon />,
-  'Option 2': <IconButton />,
+  'Option 1': html`<ds-icon></ds-icon>`,
+  'Option 2': html`<ds-icon-button></ds-icon-button>`,
 })
 
 // result is true for disabled variants otherwise undefined
 figma.enum('Variant', { Disabled: true })
 
 // enums mappings can be used to show a component based on a Figma variant
-figma.connect(Modal, 'https://...', {
+figma.connect('https://...', {
   props: {
     cancelButton: figma.enum('Type', {
-      Cancellable: <CancelButton />,
+      Cancellable: html`<ds-cancel-button></ds-cancel-button>`
     }),
     // ...
   },
-  example: ({ cancelButton }) => {
-    return (
-      <Modal>
-        <Title>Title</Title>
-        <Content>Some content</Content>
-        {cancelButton}
-      </Modal>
-    )
+  example: ({ cancelButton }) => html`\
+<ds-modal>
+  <ds-modal-title>Title</ds-modal-title>
+  <ds-modal-content>Some content</ds-modal-content>
+  ${cancelButton}
+</ds-modal>`
   },
 })
 ```
 
 Mapping objects for `figma.enum` as well as `figma.boolean` allows nested references, which is useful if you want to conditionally render a nested instance for example. (see the next section for how to use `figma.instance`)
 
-```tsx
+```ts
 // maps the 'Options' variant in Figma to enum values in code
 figma.enum('Type', {
   WithIcon: figma.instance('Icon'),
@@ -356,7 +221,7 @@ figma.enum('Type', {
 
 Note that in contrast to `figma.boolean`, values are _not_ normalized for `figma.enum`. You always need to pass the exact literal values to the mapping object.
 
-```tsx
+```ts
 // These two are equivalent for a variant with the options "Yes" and "No"
 disabled: figma.enum("Boolean Variant", {
   Yes: // ...
@@ -374,28 +239,28 @@ Instances is a Figma term for nested component references. For example, in the c
 
 To ensure instance properties are as useful as possible with Code Connect, it is advised that you also provide Code Connect for the common components which you would expect to be used as values to this property. Dev Mode will automatically hydrate the referenced component's connected code snippet example and how changes it in Dev Mode for instance props.
 
-```tsx
+```ts
 // maps an instance-swap property from Figma
 figma.instance('PropName')
 ```
 
-The return value of `figma.instance` is a JSX component and can be used in your example like a typical JSX component prop would be in your codebase.
+The return value of `figma.instance` is a `html` tagged template literal and can be used in your example as a child element.
 
-```tsx
-figma.connect(Button, 'https://...', {
+```ts
+figma.connect('https://...', {
   props: {
     icon: figma.instance('Icon'),
   },
-  example: ({ icon }) => {
-    return <Button icon={icon}>Instance prop Example</Button>
-  },
+  example: ({ icon }) => html`<ds-button><div slot="icon">${icon}</div> Instance prop Example</ds-button>`
 })
 ```
 
 You should then have a separate `figma.connect` call that connects the Icon component with the nested Figma component. Make sure to connect the backing component of that instance, not the instance itself.
 
-```tsx
-figma.connect(Icon32Add, 'https://...')
+```ts
+figma.connect('https://...', {
+  example: () => html`<ds-icon icon="add"></ds-icon>`
+})
 ```
 
 ### Instance children
@@ -414,7 +279,7 @@ Note that the nested instance also must be connected separately.
 
 > Layer names may differ between variants in a component set. To ensure the component (Button) can render a nested instance (Icon) for any of those variants, you must either use the wildcard option `figma.children("*")` or ensure that the layer name representing the instance (Icon) is the same across all variants of your component set (Button).
 
-```tsx
+```ts
 // map one child instance with the layer name "Tab"
 figma.children('Tab')
 
@@ -426,7 +291,7 @@ figma.children(['Tab 1', 'Tab 2'])
 
 `figma.children()` can be used with a single wildcard '\*' character, to partially match names or to render any nested child. Wildcards cannot be used with the array argument. Matches are case sensitive.
 
-```tsx
+```ts
 // map any (all) child instances
 figma.children('*')
 
@@ -438,30 +303,15 @@ figma.children('Icon*')
 
 In cases where you don't want to connect a child component, but instead map its properties on the parent level, you can use `figma.nestedProps()` to achieve this. This helper takes the name of the layer as it's first parameter, and a mapping object as the second parameter. These props can then be referenced in the example function. `nestedProps` will always select a **single** instance, and cannot be used to map multiple children.
 
-```tsx
+```ts
 // map the properties of a nested instance named "Button Shape"
-figma.connect(Button, "https://...", {
+figma.connect("https://...", {
   props: {
     buttonShape: figma.nestedProps('Button Shape', {
       size: figma.enum({ ... }),
     })
   },
-  example: ({ buttonShape }) => <Button size={buttonShape.size} />
-}
-```
-
-A common pattern is to use `nestedProps` to access a conditionally hidden layer. This can be achieved by using `nestedProps` in conjunction with `boolean`, and passing a fallback object in the `false` case.
-```tsx
-figma.connect(Button, "https://...", {
-  props: {
-    childProps: figma.boolean("showChild", {
-      true: figma.nestedProps('Child', {
-        label: figma.string("Label")
-      },
-      false: { label: undefined }
-    })
-  },
-  example: ({ buttonShape }) => <Button size={buttonShape.size} />
+  example: ({ buttonShape }) => html`<ds-button size=${buttonShape.size}></ds-button>`
 }
 ```
 
@@ -469,12 +319,12 @@ figma.connect(Button, "https://...", {
 
 A common pattern for design systems in Figma is to not use props for texts, but rather rely on instances overriding the text content. `figma.textContent()` allows you to select a child text layer and render its content. It takes a single parameter which is the name of the layer in the original component.
 
-```tsx
-figma.connect(Button, "https://...", {
+```ts
+figma.connect("https://...", {
   props: {
     label: figma.textContent("Text Layer")
   },
-  example: ({ label }) => <Button>{label}</Button>
+  example: ({ label }) => html`<ds-button>${label}</ds-button>`
 }
 ```
 
@@ -482,7 +332,7 @@ figma.connect(Button, "https://...", {
 
 For mapping figma properties to a className string, you can use the `figma.className` helper. It takes an array of strings and returns the concatenated string. Any other helper that returns a string (or undefined) can be used in conjunction with this. Undefined values or empty strings will be filtered out from the result
 
-```tsx
+```ts
 figma.connect("https://...", {
   props: {
     className: figma.className([
@@ -491,91 +341,193 @@ figma.connect("https://...", {
       figma.boolean("Disabled", { true: 'btn-disabled', false: '' }),
     ])
   },
-  example: ({ className }) => <button className={className} />
+  example: ({ className }) => html`<button class=${className}></button>`
 }
 ```
 
 In Dev Mode this will display as:
 
 ```
-<button className="btn-base btn-large btn-disabled" />
+<button class="btn-base btn-large btn-disabled"></button>
 ```
 
 ## Variant restrictions
 
-Sometimes a component in Figma is represented by more than one component in code. For example you may have a single `Button` in your Figma design system with a `type` property to switch between primary, secondary, and danger variants. However, in code this may be represented by three different components, a `PrimaryButton`, `SecondaryButton` and `DangerButton`.
+Sometimes a component in Figma is represented by more than one component in code. For example you may have a single `Button` in your Figma design system with a `type` property to switch between primary, secondary, and danger variants. However, in code this may be represented by three different components, a `<ds-button-primary>`, `<ds-button-secondary>` and `<ds-button-danger>`.
 
 To model this behaviour with Code Connect we can make use of something called variant restrictions. Variant restrictions allow you to provide entirely different code samples for different variants of a single Figma component. The keys and values used should match the name of the variant (or property) in Figma and it's options respectively.
 
-```tsx
-figma.connect(PrimaryButton, 'https://...', {
+```ts
+figma.connect('https://...', {
   variant: { Type: 'Primary' },
-  example: () => <PrimaryButton />,
+  example: () => html`<ds-button-primary></ds-button-primary>`,
 })
 
-figma.connect(SecondaryButton, 'https://...', {
+figma.connect('https://...', {
   variant: { Type: 'Secondary' },
-  example: () => <SecondaryButton />,
+  example: () => html`<ds-button-secondary></ds-button-secondary>`,
 })
 
-figma.connect(DangerButton, 'https://...', {
+figma.connect('https://...', {
   variant: { Type: 'Danger' },
-  example: () => <DangerButton />,
+  example: () => html`<ds-button-danger></ds-button-danger>`,
 })
 ```
 
 This will also work for Figma properties that aren't variants (for example, boolean props).
 
-```
-figma.connect(IconButton, 'https://...', {
+```ts
+figma.connect('https://...', {
   variant: { "Has Icon": true },
-  example: () => <IconButton />,
+  example: () => html`<ds-icon-button></ds-icon-button>`,
 })
 ```
 
 In some complex cases you may also want to map a code component to a combination of variants in Figma.
 
-```tsx
-figma.connect(DangerButton, 'https://...', {
+```ts
+figma.connect('https://...', {
   variant: { Type: 'Danger', Disabled: true },
-  example: () => <DangerButton />,
+  example: () => html`<ds-button-danger></ds-button-danger>`,
 })
 ```
 
-You can achieve the same thing using the Storybook API.
+## Examples
 
-```tsx
-export default {
-  component: Button,
-  parameters: {
-    design: {
-      type: 'figma',
-      url: 'https://...',
-      examples: [
-        { example: PrimaryButtonStory, variant: { Type: 'Primary' } },
-        { example: SecondaryButtonStory, variant: { Type: 'Secondary' } },
-        { example: DangerButtonStory, variant: { Type: 'Danger' } },
-      ],
-    },
+Code Connect HTML supports any valid HTML markup, and so in addition to documenting plain HTML and Web Components, can also be used for documenting HTML-based frameworks such as Angular and Vue. Any JavaScript/TypeScript code accompanying the HTML code must be enclosed in a `<script>` tag.
+
+Angular and Vue projects will be auto-detected based on their presence in `package.json`, and the default label for your examples will be set appropriately (see [label](#label) docs for more information).
+
+### Web Components example
+
+```ts
+import figma, { html } from '@figma/code-connect/html';
+
+figma.connect('https://...', {
+  props: {
+    text: figma.string('Text'),
+    disabled: figma.boolean('Disabled'),
+    size: figma.enum('Size', {
+      'small': 'sm',
+      'large': 'lg'
+    })
   },
-}
+  example: (props) =>
+      html`\
+<ds-button
+  disabled=${props.disabled}
+  size=${props.size}
+>
+  ${props.text}
+</ds-button>
 
-export function PrimaryButtonStory() {
-  return <PrimaryButton />
-}
-
-export function SecondaryButtonStory() {
-  return <SecondaryButton />
-}
-
-export function DangerButtonStory() {
-  return <DangerButton />
-}
+<script>
+  document.querySelector('ds-button')
+    .addEventListener('click', () => {
+      alert("You clicked ${props.text}");
+    })
+</script>`,
+    imports: ['<script type="module" src="https://my.domain/js/ds-button.min.js">'],
+  }
+)
 ```
 
-## Icons
+### Angular example
 
-For connecting a lot of icons, we recommend creating a script that pulls icons from a Figma file to generate an `icons.figma.tsx` file that includes all icons. You can use the script [here](../cli/scripts/README.md) as a starting point. The script is marked with "EDIT THIS" in areas where you'll need to make edits for it to work with how your Figma design system is setup and how your icons are defined in code.
+```ts
+import figma, { html } from '@figma/code-connect/html';
+
+figma.connect('https://...', {
+  props: {
+    text: figma.string('Text'),
+    disabled: figma.boolean('Disabled'),
+    size: figma.enum('Size', {
+      'small': 'sm',
+      'large': 'lg'
+    })
+  },
+  example: (props) =>
+      html`\
+<button
+  dsButton
+  disabled=${props.disabled}
+  size=${props.size}
+  (onClick)="onClick($event)"
+>
+  ${props.text}
+</button>
+
+<script>
+  export class Example {
+    public onClick() {
+      alert("You clicked ${props.text}");
+    }
+  }
+</script>`,
+    imports: ["import { DsButton } from '@ds-angular/button'"],
+  }
+)
+```
+
+### Vue example
+
+```ts
+import figma, { html } from '@figma/code-connect/html';
+
+figma.connect('https://...', {
+  props: {
+    text: figma.string('Text'),
+    disabled: figma.boolean('Disabled'),
+    size: figma.enum('Size', {
+      'small': 'sm',
+      'large': 'lg'
+    })
+  },
+  example: (props) =>
+      html`\
+<script setup>
+  function onClick() {
+    alert('You clicked ${props.text}');
+  }
+</script>
+
+<ds-button
+  disabled=${props.disabled}
+  size=${props.size}
+  @click="onClick"
+>
+  ${props.text}
+</ds-button>`,
+    imports: ["import { DsButton } from '@ds-vue/button'"],
+  }
+)
+```
+
+### Lit example
+
+As the example code is written in a template string, you need to escape any `$` symbols which you want to render verbatim in your example, otherwise they'll be interpreted as placeholders.
+
+```ts
+import figma, { html } from '@figma/code-connect/html';
+
+figma.connect('https://...', {
+  props: {
+    text: figma.string('Text'),
+    disabled: figma.boolean('Disabled')
+  },
+  example: (props) =>
+      html`\
+<ds-button
+  disabled=${props.disabled}
+  size=${props.size}
+  ?litSyntaxExample=\${booleanVar}
+>
+  ${props.text}
+</ds-button>`,
+    imports: ["import '@ds-lit/button'"],
+  }
+)
+```
 
 ## CI / CD
 
@@ -585,7 +537,7 @@ The easiest way to get started using Code Connect is by using the CLI locally. H
 on:
   push:
     paths:
-      - src/components/**/*.figma.tsx
+      - src/components/**/*.figma.ts
     branches:
       - main
 
@@ -597,19 +549,3 @@ jobs:
       - run: npx figma connect publish
 ```
 
-## Co-locating Code Connect files
-
-By default Code Connect creates a new file which lives alongside the components you want to connect to Figma. However, Code Connect may also be co-located with the component it is connecting in code. To do this, simply move the contents of the `<component-name>.figma.tsx` file into your component definition file.
-
-```tsx
-import figma from "@figma/code-connect"
-
-interface ButtonProps { ... }
-export function Button(props: ButtonProps) { ... }
-
-figma.connect(Button, "https://...", {
-  example: () => {
-    return <Button />
-  }
-})
-```

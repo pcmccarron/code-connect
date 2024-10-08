@@ -1,6 +1,7 @@
-# Code Connect (Jetpack Compose)
-
-For more information about Code Connect as well as guides for other platforms and frameworks, please [go here](../README.md).
+---
+title: Jetpack Compose
+description: Information about using code connect with Jetpack Compose.
+---
 
 This documentation guide will help you connect your Jetpack Compose components with Figma components using Code Connect. We'll cover basic setup to display your first connected component, followed by property mapping and variant mapping.
 

@@ -1,0 +1,153 @@
+@import url("./theme.css");
+
+@font-face {
+  font-family: "FigmaSans";
+  src: url('/fonts/Figma-Sans-VF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "FigmaMono";
+  src: url('/fonts/Figma-Mono-VF.woff2') format('woff2');
+  font-weight: 100 900;
+  font-stretch: 75% 125%;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --global-focus-ring-size: var(--sds-size-stroke-focus-ring);
+  --global-focus-ring-color: rgb(0, 106, 255);
+  --global-line-height-paragraph: 1.4;
+  --global-stack-top: 999;
+  --global-stack-focus: 999;
+  --global-stack-dialog-backdrop: 9999;
+  --global-stack-dialog-container: 99999;
+  --global-line-height-body: 1.6;
+}
+
+.display-none-to-flex {
+  display: var(--sds-responsive-display-none-to-flex) !important;
+}
+.display-flex-to-none {
+  display: var(--sds-responsive-display-flex-to-none) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --global-focus-ring-color: rgb(0, 106, 255);
+  }
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background: var(--sds-color-background-default-default);
+  color: var(--sds-color-text-default-default);
+  margin: 0;
+}
+
+.site-title {
+  color: var(--sds-color-text-default-default);
+}
+
+.header,
+.sidebar-pane {
+  background-color: var(--sds-color-background-default-secondary);
+  color: var(--sds-color-text-default-secondary);
+  [aria-current="page"] {
+    background-color: var(--sds-color-background-positive-secondary);
+    color: var(--sds-color-text-brand-default);
+  }
+  svg {
+    color: var(--sds-color-icon-brand-default)
+  }
+
+}
+
+.sl-flex {
+  summary {
+    background-color: var(--sds-color-background-default-secondary);
+  }
+}
+
+.sl-badge {
+  font-family: "FigmaMono";
+  border: 0;
+  color: var(--sds-color-text-brand-default);
+}
+ 
+.sl-badge.success {
+  background-color: var(--sds-color-background-positive-secondary);
+}
+.sl-badge.caution {
+  background-color: var(--sds-color-background-warning-secondary);
+}
+.sl-badge.danger {
+  background-color: var(--sds-color-background-danger-secondary);
+}
+
+
+html,
+body {
+  height: 100%;
+}
+
+#root {
+  min-height: 100%;
+  width: 100%;
+}
+
+body,
+button,
+textarea,
+input,
+select {
+  font: var(--sds-font-body-base);
+}
+
+pre,
+code {
+  font: var(--sds-font-body-code);
+}
+
+h1 {
+  font-size: var(--sds-typography-scale-08);
+  font-weight: var(--sds-typography-weight-semibold);
+}
+
+
+h2 {
+  font-size: var(--sds-typography-scale-05);
+  font-weight: var(--sds-typography-weight-light);
+}
+h3 {
+  font-size: var(--sds-typography-scale-04);
+  font-weight: var(--sds-typography-weight-extra-light);
+}
+h4 {
+  font-size: var(--sds-typography-scale-02);
+  font-weight: var(--sds-typography-thin);
+}
+
+
+h5,
+h6 {
+  font: var(--sds-font-heading);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+}
+
